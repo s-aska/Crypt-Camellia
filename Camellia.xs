@@ -56,7 +56,6 @@ encrypt(self, input)
         unsigned char* intext = SvPV(input, blockSize);
         if (blockSize != 16) {
             croak("Encryption error: Block size must be 16 bytes long!");
-            RETVAL = newSVpv("", 0);
         } else {
             RETVAL = newSVpv("", blockSize);
             Camellia_Encrypt(128, intext, self->key, SvPV_nolen(RETVAL));
@@ -76,7 +75,6 @@ decrypt(self, input)
         unsigned char* intext = SvPV(input, blockSize);
         if (blockSize != 16) {
             croak("Decryption error: Block size must be 16 bytes long!");
-            RETVAL = newSVpv("", 0);
         } else {
             RETVAL = newSVpv("", blockSize);
             Camellia_Decrypt(128, intext, self->key, SvPV_nolen(RETVAL));
