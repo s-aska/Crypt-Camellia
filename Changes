@@ -1,9 +1,10 @@
-1.0.2    2003 June 19
-         Corrected the second example in the man page
-
-1.0.1    2003 June 06
-         Removed unnecessary RETVALs
-
-1.0.0    2003 June 04
-         Initial release
+#
+#  Revision history for Perl extension Crypt::Camellia.
+#
+# $Id: Changes,v 0.1 2006/04/30 13:19:53 dankogai Exp dankogai $
+#
+#
+0.01  Sun Apr 30 18:43:05 2006
+	- original version; created by h2xs 1.23 with options
+		-A -n Crypt::Camellia camellia.h
 

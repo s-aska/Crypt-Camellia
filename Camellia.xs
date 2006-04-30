@@ -1,92 +1,61 @@
+/*
+ * $Id: Camellia.xs,v 0.1 2006/04/30 13:19:53 dankogai Exp dankogai $
+ */
 #include "EXTERN.h"
 #include "perl.h"
 #include "XSUB.h"
-#include "ppport.h"
-#include "_camellia.c"
 
-typedef struct camellia {
-    unsigned char key[256];
-}* Crypt__Camellia;
+/* #include "ppport.h" */
 
-MODULE = Crypt::Camellia		PACKAGE = Crypt::Camellia
-PROTOTYPES: DISABLE
+#include "camellia/camellia.h"
+#include "camellia/camellia.c"
 
-int
-keysize(...)
-    CODE:
-        RETVAL = 16;
-    OUTPUT:
-        RETVAL
+static KEY_TABLE_TYPE keyTable;
 
-int
-blocksize(...)
-    CODE:
-        RETVAL = 16;
-    OUTPUT:
-        RETVAL
+SV *keygen(char *key, int keysize){
+    SV * retval;
+    KEY_TABLE_TYPE keyTable;
+    Camellia_Ekeygen(keysize, (U8 *)key, keyTable);
+    retval = newSVpv((char *)keyTable, sizeof(keyTable));
+    return retval;
+}
 
-Crypt::Camellia
-new(class, rawkey)
-    SV* class
-    SV* rawkey
-    CODE:
-    {
-        STRLEN keyLength;
-        if (! SvPOK(rawkey))
-            croak("Key setup error: Key must be a string scalar!");
+SV *_enc(SV* src, SV *table, int keysize){
+    U8 buf[20];
+    SvGROW(src, 20); /* be safe */
+    Camellia_EncryptBlock(keysize, (U8 *)SvPV_nolen(src),
+			  (unsigned int *)SvPV_nolen(table), buf);
+    return newSVpv((char *)buf, 16);
+}
 
-        keyLength = SvCUR(rawkey);
-        if (keyLength != 16)
-            croak("Key setup error: Key must be 16 bytes long!");
+SV *_dec(SV* src, SV *table, int keysize){
+    U8 buf[20];
+    SvGROW(src, 20); /* be safe */
+    Camellia_DecryptBlock(keysize, (U8 *)SvPV_nolen(src),
+			  (unsigned int *)SvPV_nolen(table), buf);
+    return newSVpv((char *)buf, 16);
+}
 
-        Newz(0, RETVAL, 1, struct camellia);
-        Camellia_Ekeygen(128, SvPV_nolen(rawkey), RETVAL->key);
-    }
+MODULE = Crypt::Camellia PACKAGE = Crypt::Camellia		
 
-    OUTPUT:
-        RETVAL
+SV *
+keygen(key, keysize)
+    char *key
+    int  keysize
+CODE:
+    RETVAL = keygen(key, keysize);
+OUTPUT:
+    RETVAL
 
-SV*
-encrypt(self, input)
-    Crypt::Camellia self
-    SV* input
-    CODE:
-    {
-        STRLEN blockSize;
-        unsigned char* intext = SvPV(input, blockSize);
-        if (blockSize != 16) {
-            croak("Encryption error: Block size must be 16 bytes long!");
-        } else {
-            RETVAL = newSVpv("", blockSize);
-            Camellia_Encrypt(128, intext, self->key, SvPV_nolen(RETVAL));
-        }
-    }
-
-    OUTPUT:
-        RETVAL
-
-SV*
-decrypt(self, input)
-    Crypt::Camellia self
-    SV* input
-    CODE:
-    {
-        STRLEN blockSize;
-        unsigned char* intext = SvPV(input, blockSize);
-        if (blockSize != 16) {
-            croak("Decryption error: Block size must be 16 bytes long!");
-        } else {
-            RETVAL = newSVpv("", blockSize);
-            Camellia_Decrypt(128, intext, self->key, SvPV_nolen(RETVAL));
-        }
-    }
-
-    OUTPUT:
-        RETVAL
-
-void
-DESTROY(self)
-    Crypt::Camellia self
-    CODE:
-        Safefree(self);
+SV *
+crypt(src, table, keysize, direction)
+    SV *src
+    SV *table
+    int keysize
+    int direction
+CODE:
+    RETVAL = direction ? _enc(src, table, keysize)
+                       : _dec(src, table, keysize);
+OUTPUT:
+    RETVAL
 
