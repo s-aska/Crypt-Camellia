@@ -3,10 +3,14 @@ Changes
 MANIFEST
 Makefile.PL
 README
-camellia/README		camellia BSD 1.0
-camellia/camellia.c	camellia BSD 1.0
-camellia/camellia.h	camellia BSD 1.0
+camellia-GPL-1.1.0/COPYING
+camellia-GPL-1.1.0/README
+camellia-GPL-1.1.0/camellia.c
+camellia-GPL-1.1.0/camellia.c.patch
+camellia-GPL-1.1.0/camellia.h
 lib/Crypt/Camellia.pm
 t/00-basic.t
 t/01-CBC.t
+t/02-test-vectors-simple.t
+t/03-test-vectors-full.t
 META.yml                                 Module meta-data (added by MakeMaker)

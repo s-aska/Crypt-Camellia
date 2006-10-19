@@ -1,6 +1,6 @@
 #!/usr/local/bin/perl
 #
-# $Id: 01-CBC.t,v 0.1 2006/04/30 13:19:53 dankogai Exp dankogai $
+# $Id: 01-CBC.t,v 0.1 2006/07/21 06:50:53 oyama Exp oyama $
 #
 # Shamelessly Stolen from Crypt::CBC t/Blowfish.t -- dankogai
 #
@@ -32,7 +32,14 @@ END
 eval "use Crypt::CBC";
 
 test(1,!$@,"Couldn't load module");
-test(2,$i = Crypt::CBC->new(-key=>'secret',-cipher=>'Camellia'),"Couldn't create new object");
+if ($Crypt::CBC::VERSION <= 2.13) {
+    $i = Crypt::CBC->new({key=>'secret', cipher=>'Camellia'});
+}
+else {
+    $i = Crypt::CBC->new(-key=>'secret',-cipher=>'Camellia');
+
+}
+test(2,$i,"Couldn't create new object");
 test(3,$c = $i->encrypt($test_data),"Couldn't encrypt");
 test(4,$p = $i->decrypt($c),"Couldn't decrypt");
 test(5,$p eq $test_data,"Decrypted ciphertext doesn't match plaintext");

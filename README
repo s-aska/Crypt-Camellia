@@ -55,20 +55,20 @@ FUNCTIONS
       fixed value of 16.
 
     new
-        my $cipher = Crypt::Camellia-E<gt>new($key);
+        my $cipher = Crypt::Camellia->new($key);
 
       This creates a new Crypt::Camellia BlockCipher object, using $key,
       where $key is a key of "keysize()" bytes (minimum of eight bytes).
 
     encrypt
-        my $ciphertext = $cipher-E<gt>encrypt($plaintext);
+        my $ciphertext = $cipher->encrypt($plaintext);
 
       This function encrypts $plaintext and returns the $ciphertext where
       $plaintext and $ciphertext must be of "blocksize()" bytes. (hint:
       Camellia is an 16 byte block cipher)
 
     decrypt
-        my $plaintext = $cipher-E<gt>decrypt($ciphertext);
+        my $plaintext = $cipher->decrypt($ciphertext);
 
       This function decrypts $ciphertext and returns the $plaintext where
       $plaintext and $ciphertext must be of "blocksize()" bytes. (hint: see
@@ -84,10 +84,12 @@ NOTES
     For practical uses use this module via Crypt::CBC rather than directly.
 
 SEE ALSO
-    Crypt::CBC, Crypt::DES, Crypt::IDEA
+    Crypt::CBC, Crypt::Rijndael, Crypt::DES, Crypt::IDEA
 
 AUTHOR
     Dan Kogai, <dankogai@dan.co.jp>
+
+    Current maintainer is Hiroyuki OYAMA <oyama@module.jp>.
 
     And
 
@@ -100,7 +102,7 @@ COPYRIGHT AND LICENSE
     under the same terms as Perl itself, either Perl version 5.8.8 or, at
     your option, any later version of Perl 5 you may have available.
 
-    Except for anything under camellia/ directory which is licensed as
+    Except for anything under camellia-*/ directory which is licensed as
     follows:
 
      Copyright (c) 2006

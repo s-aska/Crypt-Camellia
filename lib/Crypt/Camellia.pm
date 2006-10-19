@@ -1,6 +1,3 @@
-#
-# $Id: Camellia.pm,v 0.1 2006/04/30 13:19:53 dankogai Exp dankogai $
-#
 package Crypt::Camellia;
 
 use 5.008001;
@@ -8,7 +5,7 @@ use strict;
 use warnings;
 use Carp;
 
-our $VERSION = sprintf "%d.%02d", q$Revision: 0.1 $ =~ /(\d+)/g;
+our $VERSION = '2.01';
 
 require XSLoader;
 XSLoader::load('Crypt::Camellia', $VERSION);
@@ -22,27 +19,36 @@ sub usage {
 }
 
 sub blocksize { 16 }
-sub keysize   { 256 }
+sub keysize   { 32 }
 
 sub new{
     usage("new Camellia key") unless @_ == 2;
     my ($type, $key) = @_;
-    my $self = {};
+    my $self = { keysize => length($key) };
     bless $self, $type;
-    $self->{keytable} = Crypt::Camellia::keygen($key, keysize());
+    if ($self->{keysize} != 16 && $self->{keysize} != 24 && $self->{keysize} != 32) {
+        croak "wrong key length: key must be 128, 192 or 256 bits long";
+    }
+    $self->{keytable} = Crypt::Camellia::keygen($key, $self->{keysize}*8);
     return $self;
 }
 
 sub encrypt{
     usage("encrypt data[16 bytes]") unless @_ == 2;
     my ($self,$data) = @_;
-    return Crypt::Camellia::crypt($data, $self->{keytable}, keysize(), 1);
+    if (length $data != blocksize()) {
+        croak "datasize not multiple of blocksize (16 bytes)";
+    }
+    return Crypt::Camellia::crypt($data, $self->{keytable}, $self->{keysize}*8, 1);
 }
 
 sub decrypt {
-    usage("decrypt data[8 bytes]") unless @_ == 2;
+    usage("decrypt data[16 bytes]") unless @_ == 2;
     my ($self,$data) = @_;
-    return Crypt::Camellia::crypt($data, $self->{keytable}, keysize(), 0);
+    if (length $data != blocksize()) {
+        croak "datasize not multiple of blocksize (16 bytes)";
+    }
+    return Crypt::Camellia::crypt($data, $self->{keytable}, $self->{keysize}*8, 0);
 }
 
 
@@ -158,12 +164,15 @@ For practical uses use this module via L<Crypt::CBC> rather than directly.
 =head1 SEE ALSO
 
 L<Crypt::CBC>,
+L<Crypt::Rijndael>,
 L<Crypt::DES>,
 L<Crypt::IDEA>
 
 =head1 AUTHOR
 
 Dan Kogai, E<lt>dankogai@dan.co.jpE<gt>
+
+Current maintainer is Hiroyuki OYAMA E<lt>oyama@module.jpE<gt>.
 
 And 
 
