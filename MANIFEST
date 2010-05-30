@@ -3,11 +3,10 @@ Changes
 MANIFEST
 Makefile.PL
 README
-camellia-GPL-1.1.0/COPYING
-camellia-GPL-1.1.0/README
-camellia-GPL-1.1.0/camellia.c
-camellia-GPL-1.1.0/camellia.c.patch
-camellia-GPL-1.1.0/camellia.h
+camellia-BSD-1.2.0/COPYING
+camellia-BSD-1.2.0/README
+camellia-BSD-1.2.0/camellia.c
+camellia-BSD-1.2.0/camellia.h
 lib/Crypt/Camellia.pm
 t/00-basic.t
 t/01-CBC.t
