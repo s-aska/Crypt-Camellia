@@ -3,7 +3,6 @@ Changes
 MANIFEST
 Makefile.PL
 README
-camellia-BSD-1.2.0/COPYING
 camellia-BSD-1.2.0/README
 camellia-BSD-1.2.0/camellia.c
 camellia-BSD-1.2.0/camellia.h
