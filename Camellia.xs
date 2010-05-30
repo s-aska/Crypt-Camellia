@@ -4,8 +4,8 @@
 
 /* #include "ppport.h" */
 
-#include "camellia-GPL-1.1.0/camellia.h"
-#include "camellia-GPL-1.1.0/camellia.c"
+#include "camellia-BSD-1.2.0/camellia.h"
+#include "camellia-BSD-1.2.0/camellia.c"
 
 static KEY_TABLE_TYPE keyTable;
 
